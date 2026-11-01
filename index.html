@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sensores en dientes del cazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E6E8E9;--surface:#FFFFFF;--ink:#1E262D;--muted:#586470;--steel:#3A4651;--line:#BCC3C8;--amber:#F2B705;--on-amber:#1E262D;--ok:#1B7A49;--bad:#B3261E;--digit:#0B5CAD;--letter:#8A4B00;--scrim:rgba(20,26,31,.55);color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161C21;--surface:#222B33;--ink:#EEF1F3;--muted:#9AA6B0;--steel:#55636F;--line:#3B4750;--amber:#F2B705;--on-amber:#1E262D;--ok:#52C488;--bad:#FF8A80;--digit:#7DB7F5;--letter:#F0B15C;--scrim:rgba(0,0,0,.65);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161C21;--surface:#222B33;--ink:#EEF1F3;--muted:#9AA6B0;--steel:#55636F;--line:#3B4750;--amber:#F2B705;--on-amber:#1E262D;--ok:#52C488;--bad:#FF8A80;--digit:#7DB7F5;--letter:#F0B15C;--scrim:rgba(0,0,0,.65);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Barlow Semi Condensed",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.35}
+main{max-width:520px;margin:0 auto;padding:16px 16px 40px}
+h1{font-size:26px;line-height:1.1;margin:4px 0 14px;font-weight:700}
+h2{font-size:20px;margin:0 0 8px;font-weight:600}
+label{display:block;font-size:15px;color:var(--muted);margin-bottom:4px}
+input,select,button{font:inherit;color:inherit}
+input,select{width:100%;min-height:52px;padding:8px 12px;border:2px solid var(--line);border-radius:10px;background:var(--surface)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--digit);outline-offset:2px}
+.row{display:flex;gap:10px;align-items:flex-end}
+.row>div{flex:1}
+.btn{min-height:52px;padding:8px 18px;border-radius:10px;border:2px solid var(--ink);background:var(--surface);font-weight:600;cursor:pointer}
+.btn.primary{background:var(--amber);color:var(--on-amber);border-color:var(--amber)}
+.btn.primary:disabled{background:var(--line);border-color:var(--line);color:var(--muted);cursor:not-allowed}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.panel{background:var(--surface);border-radius:14px;padding:16px;margin-top:14px}
+.progress{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-weight:600}
+.bar{flex:1;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .25s}
+.bucket{height:78px;background:var(--steel);border-radius:16px 16px 48px 48px/16px 16px 34px 34px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;letter-spacing:.02em}
+.teeth{display:flex;gap:4px;margin:-6px 6px 0;padding:0;list-style:none}
+.teeth li{flex:1;min-width:0}
+.tooth{width:100%;height:112px;border:0;padding:6px 0 0;cursor:pointer;clip-path:polygon(0 0,100% 0,78% 100%,22% 100%);background:var(--line);color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px}
+.tooth.full{background:var(--amber);color:var(--on-amber)}
+.tooth:focus-visible{background:var(--ink);color:var(--amber);outline:none}
+.tooth .n{font-size:14px;font-weight:500}
+.tooth .c{font-size:22px;font-weight:700;line-height:1}
+.tooth .e{font-size:14px}
+.log{list-style:none;margin:0;padding:0}
+.log li{padding:8px 0;border-top:1px solid var(--line);font-size:16px}
+.log li:first-child{border-top:0}
+.log small{color:var(--muted)}
+.empty{color:var(--muted);margin:0}
+.scrim{position:fixed;inset:0;background:var(--scrim);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.scrim.on{display:flex}
+.sheet{width:100%;max-width:520px;background:var(--surface);border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:92%;overflow:auto}
+.sheet .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.sheet .actions .btn{flex:1;min-width:130px}
+.code-in{font-size:34px;font-weight:700;text-align:center;letter-spacing:.3em;text-transform:uppercase;min-height:68px}
+.big{display:flex;justify-content:center;gap:10px;margin:14px 0}
+.big span{font-size:68px;font-weight:700;line-height:1;width:64px;text-align:center;padding:10px 0;border-radius:10px;border:2px solid var(--line)}
+.big .d{color:var(--digit)}
+.big .l{color:var(--letter)}
+.err{color:var(--bad);font-weight:600;min-height:24px;margin:6px 0 0}
+.hint{color:var(--muted);font-size:16px;margin:6px 0 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Sensores en los dientes del cazo</h1>
+
+  <div class="row">
+    <div><label for="machine">Excavadora</label><select id="machine"></select></div>
+    <button class="btn" id="newM" type="button">Nueva</button>
+  </div>
+  <div style="margin-top:10px"><label for="op">Operario</label><input id="op" autocomplete="off" placeholder="Tu nombre"></div>
+
+  <section class="panel" aria-labelledby="t-cazo">
+    <h2 id="t-cazo">Cazo</h2>
+    <p class="progress"><span id="ptext"></span><span class="bar"><i id="pbar"></i></span></p>
+    <div class="bucket">Cazo visto desde delante</div>
+    <ul class="teeth" id="teeth"></ul>
+    <p class="hint">Toca un diente para asignar su sensor.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="t-hist">
+    <h2 id="t-hist">Historial</h2>
+    <ul class="log" id="log"></ul>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" id="sheet"></div></div>
+
+<script>
+const KEY='sensores-dientes-v1';
+const demo=()=>({op:'',cur:'ex01',m:[{id:'ex01',name:'EX-01',n:5,a:{}},{id:'ex02',name:'EX-02',n:6,a:{}}],log:[]});
+function load(){try{const r=localStorage.getItem(KEY);if(r){const s=JSON.parse(r);if(s&&s.m&&s.m.length)return s}}catch(e){}return demo()}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load(), sh=null;
+const $=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cur=()=>S.m.find(m=>m.id===S.cur)||S.m[0];
+const valid=v=>/^[A-Z0-9]{3}$/.test(v);
+const now=()=>new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+
+function where(code,mid,tooth){
+  for(const m of S.m)for(const k in m.a)if(m.a[k]===code&&!(m.id===mid&&+k===tooth))return{m,k};
+  return null;
+}
+
+function render(){
+  const m=cur();
+  $('machine').innerHTML=S.m.map(x=>`<option value="${esc(x.id)}"${x.id===m.id?' selected':''}>${esc(x.name)} (${x.n} dientes)</option>`).join('');
+  $('op').value=S.op||'';
+  const done=Object.keys(m.a).length;
+  $('ptext').textContent=`${done} de ${m.n} dientes con sensor`;
+  $('pbar').style.width=(done/m.n*100)+'%';
+  let h='';
+  for(let i=1;i<=m.n;i++){
+    const c=m.a[i];
+    h+=`<li><button class="tooth${c?' full':''}" type="button" data-i="${i}" aria-label="Diente ${i}: ${c?'sensor '+c:'sin sensor'}"><span class="n">${i}</span>${c?`<span class="c">${esc(c)}</span>`:'<span class="e">Vacío</span>'}</button></li>`;
+  }
+  $('teeth').innerHTML=h;
+  const L=S.log.filter(x=>x.mid===m.id).slice(0,8);
+  $('log').innerHTML=L.length?L.map(x=>`<li><strong>${esc(x.code)}</strong> ${esc(x.act)} en el diente ${x.tooth}${x.prev?` (antes ${esc(x.prev)})`:''}<br><small>${esc(x.t)}${x.op?' · '+esc(x.op):''}</small></li>`).join(''):'<li class="empty">Aún no hay movimientos en esta excavadora.</li>';
+}
+
+function open(){ $('scrim').classList.add('on'); }
+function close(){ $('scrim').classList.remove('on'); sh=null; }
+
+function sheetTooth(){
+  const m=cur(), old=m.a[sh.i];
+  if(sh.stage==='entry'){
+    $('sheet').innerHTML=`<h2>Diente ${sh.i} de ${esc(m.name)}</h2>
+      ${old?`<p class="hint">Sensor actual: <strong>${esc(old)}</strong></p>`:''}
+      <label for="code">Código del sensor (3 letras o números)</label>
+      <input id="code" class="code-in" maxlength="3" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" value="${esc(sh.val)}">
+      <p class="err" id="err" role="alert">${esc(sh.err||'')}</p>
+      <div class="actions">
+        <button class="btn primary" id="next" type="button" disabled>Revisar código</button>
+        ${old?'<button class="btn danger" id="rm" type="button">Quitar sensor</button>':''}
+        <button class="btn" id="cancel" type="button">Cancelar</button>
+      </div>`;
+    const inp=$('code'), nx=$('next');
+    const upd=()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'');sh.val=inp.value;nx.disabled=!valid(sh.val);$('err').textContent=''};
+    inp.addEventListener('input',upd); upd();
+    nx.onclick=()=>{
+      const w=where(sh.val,m.id,sh.i);
+      if(w){$('err').textContent=`El sensor ${sh.val} ya está en el diente ${w.k} de ${w.m.name}. Quítalo allí primero.`;return}
+      sh.stage='confirm'; sheetTooth();
+    };
+    $('cancel').onclick=close;
+    if($('rm'))$('rm').onclick=()=>{
+      delete m.a[sh.i]; S.log.unshift({mid:m.id,tooth:sh.i,code:old,act:'retirado',t:now(),op:S.op}); persist(); close(); render();
+    };
+    setTimeout(()=>inp.focus(),50);
+  } else {
+    const chars=[...sh.val].map(c=>`<span class="${/[0-9]/.test(c)?'d':'l'}">${c}</span>`).join('');
+    $('sheet').innerHTML=`<h2>Comprueba el código</h2>
+      <div class="big" aria-label="Código ${esc(sh.val.split('').join(' '))}">${chars}</div>
+      <p class="hint">Azul: número. Marrón: letra. Ojo con el 0 (cero) y la O (letra), y con el 1 y la I.</p>
+      ${old&&old!==sh.val?`<p class="err">Este diente ya tiene el sensor ${esc(old)}. Se reemplazará.</p>`:''}
+      <div class="actions">
+        <button class="btn primary" id="ok" type="button">Guardar en diente ${sh.i}</button>
+        <button class="btn" id="back" type="button">Corregir</button>
+      </div>`;
+    $('back').onclick=()=>{sh.stage='entry';sheetTooth()};
+    $('ok').onclick=()=>{
+      m.a[sh.i]=sh.val;
+      S.log.unshift({mid:m.id,tooth:sh.i,code:sh.val,act:old?'reemplazado':'asignado',prev:old&&old!==sh.val?old:'',t:now(),op:S.op});
+      S.log=S.log.slice(0,200); persist(); close(); render();
+    };
+  }
+}
+
+function sheetNew(){
+  $('sheet').innerHTML=`<h2>Nueva excavadora</h2>
+    <label for="nn">Nombre o matrícula</label><input id="nn" autocomplete="off" maxlength="24">
+    <div style="margin-top:10px"><label for="nt">Dientes del cazo</label>
+    <select id="nt">${[3,4,5,6,7,8,9].map(n=>`<option${n===5?' selected':''}>${n}</option>`).join('')}</select></div>
+    <p class="err" id="err" role="alert"></p>
+    <div class="actions"><button class="btn primary" id="add" type="button">Añadir excavadora</button><button class="btn" id="cancel" type="button">Cancelar</button></div>`;
+  $('cancel').onclick=close;
+  $('add').onclick=()=>{
+    const name=$('nn').value.trim();
+    if(!name){$('err').textContent='Escribe un nombre o matrícula para la excavadora.';return}
+    if(S.m.some(x=>x.name.toLowerCase()===name.toLowerCase())){$('err').textContent='Ya existe una excavadora con ese nombre.';return}
+    const id='m'+Date.now();
+    S.m.push({id,name,n:+$('nt').value,a:{}}); S.cur=id; persist(); close(); render();
+  };
+  setTimeout(()=>$('nn').focus(),50);
+}
+
+$('teeth').addEventListener('click',e=>{
+  const b=e.target.closest('.tooth'); if(!b)return;
+  sh={i:+b.dataset.i,stage:'entry',val:'',err:''}; sheetTooth(); open();
+});
+$('newM').onclick=()=>{sh={}; sheetNew(); open()};
+$('machine').onchange=e=>{S.cur=e.target.value;persist();render()};
+$('op').oninput=e=>{S.op=e.target.value;persist()};
+$('scrim').addEventListener('click',e=>{if(e.target===$('scrim'))close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+render();
+</script>
+</body>
+</html>
